@@ -180,7 +180,8 @@ async def job_check(ctx: ContextTypes.DEFAULT_TYPE):
 def main():
     if not all([TELEGRAM_TOKEN, JIRA_SERVER, CHAT_ID]):
         raise SystemExit("Заполните TELEGRAM_TOKEN, JIRA_SERVER, OPERATOR_CHAT_ID")
-    app = Application.builder().token(TELEGRAM_TOKEN).job_queue(True).build()
+    app = Application.builder().token(TELEGRAM_TOKEN).build()
+    app.job_queue.run_repeating(job_check, CHECK_INTERVAL, first=5)
     app.add_handler(CallbackQueryHandler(button_cb))
     app.add_handler(CommandHandler("refresh", cmd_refresh))
     app.add_handler(CommandHandler("find", cmd_find))
